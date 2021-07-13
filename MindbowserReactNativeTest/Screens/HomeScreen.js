@@ -277,4 +277,3 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
-{/* <Text onPress={()=>this.props.navigation.navigate('Detail')}>Hello world</Text> */ }
