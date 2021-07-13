@@ -210,7 +210,7 @@ class HomeScreen extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevState.searchText != this.state.searchText) {
       var filteredData = this.state.dataCopy.filter((item) => {
-        return item.title.includes(this.state.searchText) && item
+        return item.title.toLowerCase().includes(this.state.searchText.toLowerCase()) && item
       })
       this.setState({
         data: filteredData
