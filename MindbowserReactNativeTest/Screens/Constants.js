@@ -6,3 +6,4 @@ export const LIMIT = '20'
 export const OFFSET = '5'
 export const RATING = 'g'
 export const SEARCH_PLACEHOLDER = 'Search here...'
+export const NO_DESCRIPTION = "No description found"

@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     textAlign: 'center',
-    fontSize: 24,
+    fontSize: 20,
     color: 'black',
     fontWeight: 'bold',
   },

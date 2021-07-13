@@ -23,7 +23,7 @@ import {
   TextInput
 } from 'react-native';
 import database from '@react-native-firebase/database';
-import {FAV_LIMIT_EXCEED,API,API_KEY,RANDOM_ID,LIMIT,OFFSET,RATING, SEARCH_PLACEHOLDER} from './Constants' 
+import { FAV_LIMIT_EXCEED, API, API_KEY, RANDOM_ID, LIMIT, OFFSET, RATING, SEARCH_PLACEHOLDER, NO_DESCRIPTION } from './Constants'
 
 class HomeScreen extends React.Component {
 
@@ -102,7 +102,7 @@ class HomeScreen extends React.Component {
           }),
           isLoading: false,
         }, () => {
-          console.log("storedFavArray " + this.state.favData);
+          // console.log("storedFavArray " + this.state.favData);
         })
 
       });
@@ -129,7 +129,12 @@ class HomeScreen extends React.Component {
         </View>
         <View style={{ flex: 0.68, flexDirection: 'column', marginLeft: 10 }}>
           <Text style={{ color: 'black', fontSize: 16, fontWeight: 'bold' }}>{item.title}</Text>
-          <Text numberOfLines={2} ellipsizeMode='tail' style={{ color: 'black', fontSize: 15, marginTop: 8 }}>{item.user && item.user.description}</Text>
+          {
+            (item.user && item.user.description) ?
+              <Text numberOfLines={2} ellipsizeMode='tail' style={{ color: 'black', fontSize: 15, marginTop: 8 }}>{item.user && item.user.description}</Text>
+              :
+              <Text numberOfLines={2} ellipsizeMode='tail' style={{ color: 'black', fontSize: 15, marginTop: 8 }}>{NO_DESCRIPTION}</Text>
+          }
         </View>
         <View style={{ flex: 0.12, alignItems: 'center' }}>
           <TouchableOpacity onPress={() => this.onFavClick(item)}>
@@ -149,7 +154,7 @@ class HomeScreen extends React.Component {
 
   onFavClick = (item) => {
     if (this.checkFavMarked(item)) {
-     
+
     } else {
       if (this.state.favData.length >= 5) {
         if (Platform.OS === 'android') {
@@ -158,19 +163,19 @@ class HomeScreen extends React.Component {
           AlertIOS.alert(FAV_LIMIT_EXCEED);
         }
       } else {
-        this.insertIntoFireStore()
+        this.insertIntoFireStore(item)
       }
     }
   }
 
   //to insert fav record into fire store
-  insertIntoFireStore(){
+  insertIntoFireStore(item) {
     const newReference = database().ref('/users').push();
-        newReference
-          .set({
-            id: item.id,
-          })
-          .then(() => console.log('Data updated.'));
+    newReference
+      .set({
+        id: item.id,
+      })
+      .then(() => console.log('Data updated.'));
   }
 
   flatListItemSeparator = () => {
@@ -212,7 +217,7 @@ class HomeScreen extends React.Component {
       })
     }
   }
-  
+
   render() {
     return (
       <View style={{ flex: 1 }}>
