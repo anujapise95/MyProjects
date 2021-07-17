@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">IProgrammerTestNew</string>
+    <string name="enter_city">Enter city name</string>
+    <string name="get_weather_data_label">Get weather</string>
+    <string name="celcius_symb">°C</string>
+    <string name="last_date_time">Last Retrived\n</string>
+    <string name="loading">Loading...</string>
+    <string name="empty_text">Please enter city to get weather data.</string>
+    <string name="humidity">"Humidity: "</string>
+</resources>
