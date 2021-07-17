@@ -42,11 +42,18 @@ public class WeatherViewModel extends AndroidViewModel {
     }
 
     public void init() {
-        // to vanish the records if its time stamp is less that 10 min of current timestamp
+//        // to vanish the records if its time stamp is less that 10 min of current timestamp
+//        weatherDatabase.databaseWriteExecutor.execute(()->{
+//            weatherDatabase.cityWeatherDao().deleteCityData(System.currentTimeMillis()-600000);
+//        });
+        cityWeatherData = weatherDatabase.cityWeatherDao().getAllCityWeather();
+    }
+
+    public void checkDataExpired(){
+        // to vanish the records if its time stamp is less than 10 min of current timestamp
         weatherDatabase.databaseWriteExecutor.execute(()->{
             weatherDatabase.cityWeatherDao().deleteCityData(System.currentTimeMillis()-600000);
         });
-        cityWeatherData = weatherDatabase.cityWeatherDao().getAllCityWeather();
     }
 
     private APIService mAPIService = ApiUtils.getAPIService();

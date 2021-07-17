@@ -11,6 +11,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 
 import com.justaccounts.iprogrammertestnew.R;
 import com.justaccounts.iprogrammertestnew.adapter.CityWeatherAdapter;
@@ -29,19 +30,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activityMainBinding= DataBindingUtil.setContentView(this, R.layout.activity_main);
+        activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         weatherViewModel = new ViewModelProvider(this).get(WeatherViewModel.class);
-        Utils.showProgressDialog(this,getString(R.string.loading)).show();
+        Utils.showProgressDialog(this, getString(R.string.loading)).show();
         initUi();
         weatherViewModel.init();
-        weatherViewModel.getCityWeatherData().observe(this,cityWeathers -> {
+        weatherViewModel.getCityWeatherData().observe(this, cityWeathers -> {
             Utils.hideProgressDialog();
-            Log.i(TAG, "onCreate: "+cityWeathers);
+            Log.i(TAG, "onCreate: " + cityWeathers);
             setupRecyclerView(cityWeathers);
         });
-        weatherViewModel.error.observe(this, err ->{
-            Log.i(TAG, "err: "+err);
-            if (err!=null&&!err.equals("")){
+        weatherViewModel.error.observe(this, err -> {
+            Log.i(TAG, "err: " + err);
+            if (err != null && !err.equals("")) {
                 Utils.hideProgressDialog();
                 activityMainBinding.textInputLayout.setErrorEnabled(true);
                 activityMainBinding.textInputLayout.setError(err);
@@ -50,24 +51,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initUi() {
+        this.setTitle(getString(R.string.weather_data));
         activityMainBinding.fetchDataBtn.setOnClickListener(this);
         activityMainBinding.cityEd.addTextChangedListener(this);
+        ArrayAdapter adapter = new
+                ArrayAdapter(this, android.R.layout.simple_list_item_1, Utils.CITIES);
+        activityMainBinding.cityEd.setAdapter(adapter);
+        activityMainBinding.cityEd.setThreshold(1);
+
     }
 
     private void setupRecyclerView(List<CityWeather> cityWeathers) {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        cityWeatherAdapter = new CityWeatherAdapter(this,cityWeathers);
+        cityWeatherAdapter = new CityWeatherAdapter(this, cityWeathers);
         activityMainBinding.cityWeatherList.setLayoutManager(layoutManager);
         activityMainBinding.cityWeatherList.addItemDecoration(new DividerItemDecoration(activityMainBinding.cityWeatherList.getContext(), DividerItemDecoration.VERTICAL));
         activityMainBinding.cityWeatherList.setAdapter(cityWeatherAdapter);
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        weatherViewModel.checkDataExpired();
+    }
+
+    @Override
     public void onClick(View view) {
-        if (!activityMainBinding.cityEd.getText().toString().equals("")){
-            Utils.showProgressDialog(this,getString(R.string.loading)).show();
+        if (!activityMainBinding.cityEd.getText().toString().equals("")) {
+            Utils.showProgressDialog(this, getString(R.string.loading)).show();
             weatherViewModel.getWeatherData(activityMainBinding.cityEd.getText().toString());
-        }else {
+        } else {
             activityMainBinding.textInputLayout.setErrorEnabled(true);
             activityMainBinding.textInputLayout.setError(getString(R.string.empty_text));
         }
@@ -80,6 +93,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+       clearValidationMsg();
+    }
+
+    public void clearValidationMsg() {
         activityMainBinding.textInputLayout.setErrorEnabled(false);
         activityMainBinding.textInputLayout.setError("");
     }

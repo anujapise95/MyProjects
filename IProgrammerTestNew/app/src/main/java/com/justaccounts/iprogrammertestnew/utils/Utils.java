@@ -48,4 +48,7 @@ public class Utils {
             e.printStackTrace();
         }
     }
+    public static final String[] CITIES = new String[] {
+            "Nashik", "Pune", "Mumbai", "Nagpur", "Amravati","Kolhapur","Akola","Yavatmal","Satara","Nandurbar","Bhusawal","Ratnagiri","Dhule"
+    };
 }
